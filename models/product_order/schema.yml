@@ -1,0 +1,137 @@
+version: 2
+
+sources:
+
+  - name: raw_data
+    database: DBT_CLOUD
+    schema: RAW_DATA
+
+    tables:
+
+      # Raw product data
+      - name: product_shopee
+        identifier: raw_product_shopee
+
+      - name: product_lazada
+        identifier: raw_product_lazada
+
+      - name: product_tiktok
+        identifier: raw_product_tiktok
+
+      # Raw order data
+      - name: order_shopee
+        identifier: raw_order_shopee
+
+      - name: order_lazada
+        identifier: raw_order_lazada
+
+      - name: order_tiktok
+        identifier: raw_order_tiktok
+
+      # Raw order item data
+      - name: order_item_shopee
+        identifier: raw_order_item_shopee
+
+      - name: order_item_lazada
+        identifier: raw_order_item_lazada
+
+      - name: order_item_tiktok
+        identifier: raw_order_item_tiktok
+
+
+models:
+
+  # ==========================================
+  # Product staging
+  # ==========================================
+
+  - name: stg_product_shopee
+    description: "A Shopee product staging model"
+    columns:
+      - name: product_key
+        description: "Unique key for region, platform, product, and SKU"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_product_lazada
+    description: "A Lazada product staging model"
+    columns:
+      - name: product_key
+        description: "Unique key for region, platform, product, and SKU"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_product_tiktok
+    description: "A TikTok product staging model"
+    columns:
+      - name: product_key
+        description: "Unique key for region, platform, product, and SKU"
+        tests:
+          - unique
+          - not_null
+
+
+  # ==========================================
+  # Order staging
+  # ==========================================
+
+  - name: stg_order_shopee
+    description: "A Shopee order staging model"
+    columns:
+      - name: order_key
+        description: "Unique key for region, platform, and order"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_order_lazada
+    description: "A Lazada order staging model"
+    columns:
+      - name: order_key
+        description: "Unique key for region, platform, and order"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_order_tiktok
+    description: "A TikTok order staging model"
+    columns:
+      - name: order_key
+        description: "Unique key for region, platform, and order"
+        tests:
+          - unique
+          - not_null
+
+
+  # ==========================================
+  # Order item staging
+  # ==========================================
+
+  - name: stg_order_item_shopee
+    description: "A Shopee order item staging model"
+    columns:
+      - name: order_item_key
+        description: "Unique key for region, platform, order, product, and SKU"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_order_item_lazada
+    description: "A Lazada order item staging model"
+    columns:
+      - name: order_item_key
+        description: "Unique key for region, platform, order, product, and SKU"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_order_item_tiktok
+    description: "A TikTok order item staging model"
+    columns:
+      - name: order_item_key
+        description: "Unique key for region, platform, order, product, and SKU"
+        tests:
+          - unique
+          - not_null
