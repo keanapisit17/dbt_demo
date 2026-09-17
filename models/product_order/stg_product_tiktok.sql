@@ -1,0 +1,21 @@
+SELECT
+    upper(PLATFORM) AS PLATFORM,
+    upper(REGION) AS REGION,
+    upper(PRODUCT_ID) AS PRODUCT_ID,
+    upper(SKU_ID) AS SKU_ID,
+    PRODUCT_NAME,
+    SHOP_NAME,
+    PRODUCT_CATEGORY AS CATEGORY,
+    BRAND,
+    LISTING_PRICE AS PRICE,
+    AVAILABLE_STOCK AS STOCK,
+    RATING,
+    ORDERS AS UNITS_SOLD,
+    CONCAT_WS(
+        '_',
+        UPPER(REGION),
+        UPPER(PLATFORM),
+        UPPER(PRODUCT_ID),
+        UPPER(SKU_ID)
+    ) AS PRODUCT_KEY
+FROM {{ source('raw_data', 'product_tiktok') }}

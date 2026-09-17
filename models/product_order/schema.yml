@@ -38,6 +38,29 @@ sources:
       - name: order_item_tiktok
         identifier: raw_order_item_tiktok
 
+  - name: dbt_test
+    database: DBT_CLOUD
+    schema: DBT_TEST
+
+    tables:
+
+      # Product Catalog Reference
+      - name: master_product_catalog
+        identifier: master_product_catalog
+
+      # Product Mapping Reference
+      - name: master_product_mapping
+        identifier: master_product_mapping
+
+      # Raw product data
+      - name: stg_product_shopee
+        identifier: stg_product_shopee
+
+      - name: stg_product_lazada
+        identifier: stg_product_lazada
+
+      - name: stg_product_tiktok
+        identifier: stg_product_tiktok
 
 models:
 
