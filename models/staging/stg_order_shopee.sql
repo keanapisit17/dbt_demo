@@ -22,6 +22,7 @@ WITH
                 UPPER(ORDER_ID)
             ) AS ORDER_KEY
         FROM  {{ source('raw_data', 'order_shopee') }}
+        ORDER BY ORDER_AT DESC
     ),
 
     mapping AS (
@@ -51,8 +52,11 @@ SELECT
     o.ORDER_STATUS,
     CONCAT_WS(
         '_',
-        m.MASTER_PRODUCT_ID,
-        UPPER(o.ORDER_ID)
+        o.PLATFORM,
+        o.REGION,
+        o.PRODUCT_ID,
+        o.SKU_ID,
+        o.ORDER_ID
     ) AS ORDER_KEY  -- unique key
 FROM orders o
 LEFT JOIN mapping m

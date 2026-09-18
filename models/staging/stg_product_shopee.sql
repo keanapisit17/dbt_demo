@@ -27,7 +27,7 @@ WITH
     )
 
 SELECT
-    m.MASTER_PRODUCT_ID, -- unique key
+    m.MASTER_PRODUCT_ID,
     p.PLATFORM,
     p.REGION,
     p.PRODUCT_ID,
@@ -39,7 +39,14 @@ SELECT
     p.PRICE,
     p.STOCK,
     p.RATING,
-    p.UNITS_SOLD
+    p.UNITS_SOLD,
+    CONCAT_WS(
+        '_',
+        p.PLATFORM,
+        p.REGION,
+        p.PRODUCT_ID,
+        p.SKU_ID
+    ) AS PRODUCT_KEY  -- unique key
 FROM product p
 LEFT JOIN mapping m
     ON p.PLATFORM = m.PLATFORM
