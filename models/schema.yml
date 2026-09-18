@@ -52,7 +52,7 @@ models:
   - name: stg_product_shopee
     description: "A Shopee product staging model"
     columns:
-      - name: product_key
+      - name: master_product_id
         description: "Unique key for region, platform, product, and SKU"
         tests:
           - unique
@@ -61,7 +61,7 @@ models:
   - name: stg_product_lazada
     description: "A Lazada product staging model"
     columns:
-      - name: product_key
+      - name: master_product_id
         description: "Unique key for region, platform, product, and SKU"
         tests:
           - unique
@@ -70,7 +70,7 @@ models:
   - name: stg_product_tiktok
     description: "A TikTok product staging model"
     columns:
-      - name: product_key
+      - name: master_product_id
         description: "Unique key for region, platform, product, and SKU"
         tests:
           - unique
@@ -111,7 +111,7 @@ models:
   - name: vw_dim_product
     description: "A combined product"
     columns:
-      - name: product_key
+      - name: master_product_id
         description: "Unique key for region, platform, product, and SKU"
         tests:
           - unique
