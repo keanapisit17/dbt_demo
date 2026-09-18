@@ -39,14 +39,7 @@ SELECT
     p.PRICE,
     p.STOCK,
     p.RATING,
-    p.UNITS_SOLD,
-    CONCAT_WS(
-        '_',
-        p.PLATFORM,
-        p.REGION,
-        p.PRODUCT_ID,
-        p.SKU_ID
-    ) AS PRODUCT_KEY  -- unique key
+    p.UNITS_SOLD
 FROM product p
 LEFT JOIN mapping m
     ON p.PLATFORM = m.PLATFORM

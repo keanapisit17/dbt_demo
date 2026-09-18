@@ -15,8 +15,7 @@ WITH
             ITEM_SELLER_DISCOUNT,
             ITEM_SHIPPING_FEE,
             ITEM_PRICE_AFTER_DISCOUNT,
-            ORDER_STATUS,
-            ORDER_KEY
+            ORDER_STATUS
         FROM {{ ref('fact_order') }}
         WHERE ORDER_STATUS = 'COMPLETED'
     ),
@@ -30,8 +29,7 @@ WITH
             SKU_ID,
             PRODUCT_NAME,
             SHOP_NAME,
-            RATING,
-            PRODUCT_KEY
+            RATING
         FROM {{ ref('dim_product') }}
     ),
 
@@ -42,11 +40,11 @@ WITH
             p.MASTER_PRODUCT_ID,
             p.PRODUCT_NAME,
             o.ORDER_YEAR_MONTH,
-            COUNT(DISTINCT o.ORDER_KEY) AS TOTAL_ORDERS,
+            COUNT(DISTINCT o.ORDER_ID) AS TOTAL_ORDERS,
             COALESCE(SUM(o.QUANTITY), 0) AS TOTAL_UNITS,
             COALESCE(SUM(o.ITEM_PRICE_AFTER_DISCOUNT), 0) AS TOTAL_REVENUE,
             COALESCE(
-                SUM(o.ITEM_PRICE_AFTER_DISCOUNT)/ NULLIF(COUNT(DISTINCT o.ORDER_KEY), 0),
+                SUM(o.ITEM_PRICE_AFTER_DISCOUNT)/ NULLIF(COUNT(DISTINCT o.ORDER_ID), 0),
                 0
             ) AS AVG_ORDER_VALUE,
             MIN(o.ORDER_AT) AS FIRST_ORDER_AT,

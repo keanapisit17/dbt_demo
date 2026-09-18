@@ -15,7 +15,6 @@ WITH
             PAID_AMOUNT AS ITEM_PRICE_AFTER_DISCOUNT,
             upper(STATUS) AS ORDER_STATUS
         FROM  {{ source('raw_data', 'order_lazada') }}
-        ORDER BY ORDER_AT DESC
     ),
 
     mapping AS (
@@ -42,15 +41,7 @@ SELECT
     o.ITEM_SELLER_DISCOUNT,
     o.ITEM_SHIPPING_FEE,
     o.ITEM_PRICE_AFTER_DISCOUNT,
-    o.ORDER_STATUS,
-    CONCAT_WS(
-        '_',
-        o.PLATFORM,
-        o.REGION,
-        o.PRODUCT_ID,
-        o.SKU_ID,
-        o.ORDER_ID
-    ) AS ORDER_KEY  -- unique key
+    o.ORDER_STATUS
 FROM orders o
 LEFT JOIN mapping m
     ON o.PLATFORM = m.PLATFORM

@@ -13,14 +13,7 @@ WITH
             SELLER_DISCOUNT AS ITEM_SELLER_DISCOUNT,
             SHIPPING_FEE AS ITEM_SHIPPING_FEE,
             SETTLEMENT_AMOUNT AS ITEM_PRICE_AFTER_DISCOUNT,
-            upper(STATUS) AS ORDER_STATUS,
-            CONCAT_WS(
-                '_',
-                UPPER(REGION),
-                UPPER(PRODUCT_ID),
-                UPPER(SKU_ID),
-                UPPER(ORDER_ID)
-            ) AS ORDER_KEY
+            upper(STATUS) AS ORDER_STATUS
         FROM  {{ source('raw_data', 'order_tiktok') }}
         ORDER BY ORDER_AT DESC
     ),
@@ -49,15 +42,7 @@ SELECT
     o.ITEM_SELLER_DISCOUNT,
     o.ITEM_SHIPPING_FEE,
     o.ITEM_PRICE_AFTER_DISCOUNT,
-    o.ORDER_STATUS,
-    CONCAT_WS(
-        '_',
-        o.PLATFORM,
-        o.REGION,
-        o.PRODUCT_ID,
-        o.SKU_ID,
-        o.ORDER_ID
-    ) AS ORDER_KEY  -- unique key
+    o.ORDER_STATUS
 FROM orders o
 LEFT JOIN mapping m
     ON o.PLATFORM = m.PLATFORM

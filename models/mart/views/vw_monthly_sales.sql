@@ -1,3 +1,4 @@
+-- Grain: Platform - Region - Product ID
 WITH 
     orders AS (
         SELECT
@@ -15,8 +16,7 @@ WITH
             ITEM_SELLER_DISCOUNT,
             ITEM_SHIPPING_FEE,
             ITEM_PRICE_AFTER_DISCOUNT,
-            ORDER_STATUS,
-            ORDER_KEY
+            ORDER_STATUS
         FROM {{ ref('fact_order') }}
     )
 
@@ -24,7 +24,7 @@ SELECT
     ORDER_YEAR_MONTH,
     PLATFORM,
     REGION,
-    COUNT(DISTINCT ORDER_KEY) AS TOTAL_ORDERS,
+    COUNT(DISTINCT ORDER_ID) AS TOTAL_ORDERS,
     COALESCE(SUM(QUANTITY),0) AS TOTAL_UNITS,
     COALESCE(SUM(ITEM_PRICE_AFTER_DISCOUNT),0) AS TOTAL_REVENUE
 FROM orders o
