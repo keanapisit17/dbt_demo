@@ -51,6 +51,8 @@ models:
     mart:
       +schema: MART
       +materialized: table
+      views:
+        +materialized: view
 
 flags:
   require_generic_test_arguments_property: true
