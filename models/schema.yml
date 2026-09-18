@@ -18,7 +18,7 @@ sources:
       - name: product_tiktok
         identifier: raw_product_tiktok
 
-      # Raw order data
+      # Raw order item data
       - name: order_shopee
         identifier: raw_order_shopee
 
@@ -28,19 +28,9 @@ sources:
       - name: order_tiktok
         identifier: raw_order_tiktok
 
-      # Raw order item data
-      - name: order_item_shopee
-        identifier: raw_order_item_shopee
-
-      - name: order_item_lazada
-        identifier: raw_order_item_lazada
-
-      - name: order_item_tiktok
-        identifier: raw_order_item_tiktok
-
-  - name: dbt_test
+  - name: blue_reference
     database: DBT_CLOUD
-    schema: DBT_TEST
+    schema: blue_reference
 
     tables:
 
@@ -51,16 +41,7 @@ sources:
       # Product Mapping Reference
       - name: master_product_mapping
         identifier: master_product_mapping
-
-      # Raw product data
-      - name: stg_product_shopee
-        identifier: stg_product_shopee
-
-      - name: stg_product_lazada
-        identifier: stg_product_lazada
-
-      - name: stg_product_tiktok
-        identifier: stg_product_tiktok
+  
 
 models:
 
@@ -99,29 +80,48 @@ models:
   # Order item staging
   # ==========================================
 
-  - name: stg_order_item_shopee
+  - name: stg_order_shopee
     description: "A Shopee order item staging model"
     columns:
-      - name: order_item_key
+      - name: order_key
         description: "Unique key for region, platform, order, product, and SKU"
         tests:
           - unique
           - not_null
 
-  - name: stg_order_item_lazada
+  - name: stg_order_lazada
     description: "A Lazada order item staging model"
     columns:
-      - name: order_item_key
+      - name: order_key
         description: "Unique key for region, platform, order, product, and SKU"
         tests:
           - unique
           - not_null
 
-  - name: stg_order_item_tiktok
+  - name: stg_order_tiktok
     description: "A TikTok order item staging model"
     columns:
-      - name: order_item_key
+      - name: order_key
         description: "Unique key for region, platform, order, product, and SKU"
+        tests:
+          - unique
+          - not_null
+
+
+  - name: vw_dim_product
+    description: "A combined product"
+    columns:
+      - name: product_key
+        description: "Unique key for region, platform, product, and SKU"
+        tests:
+          - unique
+          - not_null
+
+  - name: vw_fact_order
+    description: "A combined order"
+    columns:
+      - name: order_key
+        description: "Unique key for region, platform, product, and SKU"
         tests:
           - unique
           - not_null

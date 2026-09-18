@@ -14,7 +14,6 @@ SELECT
     CONCAT_WS(
         '_',
         UPPER(REGION),
-        UPPER(PLATFORM),
         UPPER(PRODUCT_ID),
         UPPER(SKU_ID)
         ) AS PRODUCT_KEY

@@ -11,5 +11,12 @@ SELECT
     SELLER_DISCOUNT AS ITEM_SELLER_DISCOUNT,
     SHIPPING_FEE AS ITEM_SHIPPING_FEE,
     BUYER_PAYMENT AS ITEM_PRICE_AFTER_DISCOUNT,
-    upper(ORDER_STATUS) AS ORDER_STATUS
-FROM  {{ source('raw_data', 'order_item_shopee') }}
+    upper(ORDER_STATUS) AS ORDER_STATUS,
+    CONCAT_WS(
+        '_',
+        UPPER(REGION),
+        UPPER(PRODUCT_ID),
+        UPPER(SKU_ID),
+        UPPER(ORDER_ID)
+    ) AS ORDER_KEY
+FROM  {{ source('raw_data', 'order_shopee') }}
