@@ -95,39 +95,6 @@ models:
           - unique
           - not_null
 
-
-  # ==========================================
-  # Order staging
-  # ==========================================
-
-  - name: stg_order_shopee
-    description: "A Shopee order staging model"
-    columns:
-      - name: order_key
-        description: "Unique key for region, platform, and order"
-        tests:
-          - unique
-          - not_null
-
-  - name: stg_order_lazada
-    description: "A Lazada order staging model"
-    columns:
-      - name: order_key
-        description: "Unique key for region, platform, and order"
-        tests:
-          - unique
-          - not_null
-
-  - name: stg_order_tiktok
-    description: "A TikTok order staging model"
-    columns:
-      - name: order_key
-        description: "Unique key for region, platform, and order"
-        tests:
-          - unique
-          - not_null
-
-
   # ==========================================
   # Order item staging
   # ==========================================
