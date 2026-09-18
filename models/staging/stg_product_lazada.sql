@@ -1,50 +1,49 @@
-WITH 
+WITH
     product AS (
         SELECT
-            upper(PLATFORM) AS PLATFORM,
-            upper(REGION) AS REGION,
-            upper(PRODUCT_CODE) AS PRODUCT_ID,
-            upper(SELLER_SKU) AS SKU_ID,
-            PRODUCT_TITLE AS PRODUCT_NAME,
-            SELLER_NAME AS SHOP_NAME,
-            CATEGORY_NAME AS CATEGORY,
-            BRAND_NAME AS BRAND,
-            SELLING_PRICE AS PRICE,
-            INVENTORY AS STOCK,
-            REVIEW_SCORE AS RATING,
-            UNITS_SOLD
+            upper(platform) AS platform,
+            upper(region) AS region,
+            upper(product_code) AS product_id,
+            upper(seller_sku) AS sku_id,
+            product_title AS product_name,
+            seller_name AS shop_name,
+            category_name AS category,
+            brand_name AS brand,
+            selling_price AS price,
+            inventory AS stock,
+            review_score AS rating,
+            units_sold
         FROM {{ source('raw_data', 'product_lazada') }}
     ),
 
     mapping AS (
-        SELECT 
-            MASTER_PRODUCT_ID,
-            PLATFORM,
-            REGION,
-            PRODUCT_ID,
-            SKU_ID
+        SELECT
+            master_product_id,
+            platform,
+            region,
+            product_id,
+            sku_id
         FROM {{ source('blue_reference', 'master_product_mapping') }}
     )
 
 SELECT
-    m.MASTER_PRODUCT_ID,
-    p.PLATFORM,
-    p.REGION,
-    p.PRODUCT_ID,
-    p.SKU_ID,
-    p.PRODUCT_NAME,
-    p.SHOP_NAME,
-    p.CATEGORY,
-    p.BRAND,
-    p.PRICE,
-    p.STOCK,
-    p.RATING,
-    p.UNITS_SOLD
+    m.master_product_id,
+    p.platform,
+    p.region,
+    p.product_id,
+    p.sku_id,
+    p.product_name,
+    p.shop_name,
+    p.category,
+    p.brand,
+    p.price,
+    p.stock,
+    p.rating,
+    p.units_sold
 FROM product p
 LEFT JOIN mapping m
-    ON p.PLATFORM = m.PLATFORM
-    AND p.REGION = m.REGION
-    AND p.PRODUCT_ID = m.PRODUCT_ID
-    AND p.SKU_ID = m.SKU_ID
-
+    ON p.platform = m.platform
+    AND p.region = m.region
+    AND p.product_id = m.product_id
+    AND p.sku_id = m.sku_id
 

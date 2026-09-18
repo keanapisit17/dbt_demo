@@ -1,53 +1,52 @@
-WITH 
+WITH
     orders AS (
         SELECT
-            upper(PLATFORM) AS PLATFORM,
-            upper(REGION) AS REGION,
-            upper(ORDER_ID) AS ORDER_ID,
-            upper(PRODUCT_ID) AS PRODUCT_ID,
-            upper(SKU_ID) AS SKU_ID,
-            CREATED_TIME AS ORDER_AT,
-            QUANTITY,
-            SALE_PRICE AS ITEM_PRICE,
-            PLATFORM_DISCOUNT AS ITEM_PLATFORM_DISCOUNT,
-            SELLER_DISCOUNT AS ITEM_SELLER_DISCOUNT,
-            SHIPPING_FEE AS ITEM_SHIPPING_FEE,
-            SETTLEMENT_AMOUNT AS ITEM_PRICE_AFTER_DISCOUNT,
-            upper(STATUS) AS ORDER_STATUS
+            upper(platform) AS platform,
+            upper(region) AS region,
+            upper(order_id) AS order_id,
+            upper(product_id) AS product_id,
+            upper(sku_id) AS sku_id,
+            created_time AS order_at,
+            quantity,
+            sale_price AS item_price,
+            platform_discount AS item_platform_discount,
+            seller_discount AS item_seller_discount,
+            shipping_fee AS item_shipping_fee,
+            settlement_amount AS item_price_after_discount,
+            upper(status) AS order_status
         FROM  {{ source('raw_data', 'order_tiktok') }}
-        ORDER BY ORDER_AT DESC
+        ORDER BY order_at DESC
     ),
 
     mapping AS (
-        SELECT 
-            MASTER_PRODUCT_ID,
-            PLATFORM,
-            REGION,
-            PRODUCT_ID,
-            SKU_ID
+        SELECT
+            master_product_id,
+            platform,
+            region,
+            product_id,
+            sku_id
         FROM {{ source('blue_reference', 'master_product_mapping') }}
     )
 
 SELECT
-    m.MASTER_PRODUCT_ID,
-    o.PLATFORM,
-    o.REGION,
-    o.ORDER_ID,
-    o.PRODUCT_ID,
-    o.SKU_ID,
-    o.ORDER_AT,
-    o.QUANTITY,
-    o.ITEM_PRICE,
-    o.ITEM_PLATFORM_DISCOUNT,
-    o.ITEM_SELLER_DISCOUNT,
-    o.ITEM_SHIPPING_FEE,
-    o.ITEM_PRICE_AFTER_DISCOUNT,
-    o.ORDER_STATUS
+    m.master_product_id,
+    o.platform,
+    o.region,
+    o.order_id,
+    o.product_id,
+    o.sku_id,
+    o.order_at,
+    o.quantity,
+    o.item_price,
+    o.item_platform_discount,
+    o.item_seller_discount,
+    o.item_shipping_fee,
+    o.item_price_after_discount,
+    o.order_status
 FROM orders o
 LEFT JOIN mapping m
-    ON o.PLATFORM = m.PLATFORM
-    AND o.REGION = m.REGION
-    AND o.PRODUCT_ID = m.PRODUCT_ID
-    AND o.SKU_ID = m.SKU_ID
-
+    ON o.platform = m.platform
+    AND o.region = m.region
+    AND o.product_id = m.product_id
+    AND o.sku_id = m.sku_id
 

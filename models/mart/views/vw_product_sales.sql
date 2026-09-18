@@ -1,84 +1,84 @@
-WITH 
+WITH
     orders AS (
         SELECT
-            MASTER_PRODUCT_ID,
-            PLATFORM,
-            REGION,
-            ORDER_ID,
-            PRODUCT_ID,
-            SKU_ID,
-            ORDER_AT,
-            TO_CHAR(ORDER_AT, 'YYYY-MM') AS ORDER_YEAR_MONTH,
-            QUANTITY,
-            ITEM_PRICE,
-            ITEM_PLATFORM_DISCOUNT,
-            ITEM_SELLER_DISCOUNT,
-            ITEM_SHIPPING_FEE,
-            ITEM_PRICE_AFTER_DISCOUNT,
-            ORDER_STATUS
+            master_product_id,
+            platform,
+            region,
+            order_id,
+            product_id,
+            sku_id,
+            order_at,
+            TO_CHAR(order_at, 'YYYY-MM') AS order_year_month,
+            quantity,
+            item_price,
+            item_platform_discount,
+            item_seller_discount,
+            item_shipping_fee,
+            item_price_after_discount,
+            order_status
         FROM {{ ref('fact_order') }}
-        WHERE ORDER_STATUS = 'COMPLETED'
+        WHERE order_status = 'COMPLETED'
     ),
 
     product AS (
         SELECT
-            MASTER_PRODUCT_ID,
-            PLATFORM,
-            REGION,
-            PRODUCT_ID,
-            SKU_ID,
-            PRODUCT_NAME,
-            SHOP_NAME,
-            RATING
+            master_product_id,
+            platform,
+            region,
+            product_id,
+            sku_id,
+            product_name,
+            shop_name,
+            rating
         FROM {{ ref('dim_product') }}
     ),
 
     month_sales AS (
         SELECT
-            p.PLATFORM,
-            p.REGION,
-            p.MASTER_PRODUCT_ID,
-            p.PRODUCT_NAME,
-            o.ORDER_YEAR_MONTH,
-            COUNT(DISTINCT o.ORDER_ID) AS TOTAL_ORDERS,
-            COALESCE(SUM(o.QUANTITY), 0) AS TOTAL_UNITS,
-            COALESCE(SUM(o.ITEM_PRICE_AFTER_DISCOUNT), 0) AS TOTAL_REVENUE,
+            p.platform,
+            p.region,
+            p.master_product_id,
+            p.product_name,
+            o.order_year_month,
+            COUNT(DISTINCT o.order_id) AS total_orders,
+            COALESCE(SUM(o.quantity), 0) AS total_units,
+            COALESCE(SUM(o.item_price_after_discount), 0) AS total_revenue,
             COALESCE(
-                SUM(o.ITEM_PRICE_AFTER_DISCOUNT)/ NULLIF(COUNT(DISTINCT o.ORDER_ID), 0),
+                SUM(o.item_price_after_discount)/ NULLIF(COUNT(DISTINCT o.order_id), 0),
                 0
-            ) AS AVG_ORDER_VALUE,
-            MIN(o.ORDER_AT) AS FIRST_ORDER_AT,
-            MAX(o.ORDER_AT) AS LAST_ORDER_AT
+            ) AS avg_order_value,
+            MIN(o.order_at) AS first_order_at,
+            MAX(o.order_at) AS last_order_at
         FROM product p
         LEFT JOIN orders o
-            ON p.PLATFORM = o.PLATFORM
-            AND p.REGION = o.REGION
-            AND p.PRODUCT_ID = o.PRODUCT_ID
-            AND p.SKU_ID = o.SKU_ID
+            ON p.platform = o.platform
+            AND p.region = o.region
+            AND p.product_id = o.product_id
+            AND p.sku_id = o.sku_id
         GROUP BY 1,2,3,4,5
     ),
-    
+
     previous_month_sales AS (
         SELECT
             *,
-            LAG(TOTAL_REVENUE) OVER (
-                PARTITION BY MASTER_PRODUCT_ID, PLATFORM, REGION
-                ORDER BY ORDER_YEAR_MONTH
-            ) AS PREV_MONTH_REVENUE
+            LAG(total_revenue) OVER (
+                PARTITION BY master_product_id, platform, region
+                ORDER BY order_year_month
+            ) AS prev_month_revenue
         FROM month_sales
     )
 
 SELECT
     *,
-    TOTAL_REVENUE - PREV_MONTH_REVENUE AS MOM_REVENUE_CHANGE,
-    (TOTAL_REVENUE / NULLIF(PREV_MONTH_REVENUE, 0)) - 1 AS MOM_REVENUE_GROWTH
+    total_revenue - prev_month_revenue AS mom_revenue_change,
+    (total_revenue / NULLIF(prev_month_revenue, 0)) - 1 AS mom_revenue_growth
 FROM previous_month_sales
 ORDER BY
-    PLATFORM,
-    REGION,
-    MASTER_PRODUCT_ID,
-    ORDER_YEAR_MONTH
-    
+    platform,
+    region,
+    master_product_id,
+    order_year_month
+
 
 
 

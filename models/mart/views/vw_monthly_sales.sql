@@ -1,32 +1,32 @@
 -- Grain: Platform - Region - Product ID
-WITH 
+WITH
     orders AS (
         SELECT
-            MASTER_PRODUCT_ID,
-            PLATFORM,
-            REGION,
-            ORDER_ID,
-            PRODUCT_ID,
-            SKU_ID,
-            ORDER_AT,
-            TO_CHAR(ORDER_AT, 'YYYY-MM') AS ORDER_YEAR_MONTH,
-            QUANTITY,
-            ITEM_PRICE,
-            ITEM_PLATFORM_DISCOUNT,
-            ITEM_SELLER_DISCOUNT,
-            ITEM_SHIPPING_FEE,
-            ITEM_PRICE_AFTER_DISCOUNT,
-            ORDER_STATUS
+            master_product_id,
+            platform,
+            region,
+            order_id,
+            product_id,
+            sku_id,
+            order_at,
+            TO_CHAR(order_at, 'YYYY-MM') AS order_year_month,
+            quantity,
+            item_price,
+            item_platform_discount,
+            item_seller_discount,
+            item_shipping_fee,
+            item_price_after_discount,
+            order_status
         FROM {{ ref('fact_order') }}
     )
 
 SELECT
-    ORDER_YEAR_MONTH,
-    PLATFORM,
-    REGION,
-    COUNT(DISTINCT ORDER_ID) AS TOTAL_ORDERS,
-    COALESCE(SUM(QUANTITY),0) AS TOTAL_UNITS,
-    COALESCE(SUM(ITEM_PRICE_AFTER_DISCOUNT),0) AS TOTAL_REVENUE
+    order_year_month,
+    platform,
+    region,
+    COUNT(DISTINCT order_id) AS total_orders,
+    COALESCE(SUM(quantity),0) AS total_units,
+    COALESCE(SUM(item_price_after_discount),0) AS total_revenue
 FROM orders o
 GROUP BY 1,2,3
 ORDER BY 1,2,3
