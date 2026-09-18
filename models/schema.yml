@@ -2,6 +2,10 @@ version: 2
 
 sources:
 
+  # ==========================================
+  # Raw data
+  # ==========================================
+
   - name: raw_data
     database: DBT_CLOUD
     schema: RAW_DATA
@@ -28,9 +32,14 @@ sources:
       - name: order_tiktok
         identifier: raw_order_tiktok
 
+
+  # ==========================================
+  # Reference data
+  # ==========================================
+
   - name: blue_reference
     database: DBT_CLOUD
-    schema: blue_reference
+    schema: BLUE_REFERENCE
 
     tables:
 
@@ -41,7 +50,7 @@ sources:
       # Product Mapping Reference
       - name: master_product_mapping
         identifier: master_product_mapping
-  
+
 
 models:
 
@@ -51,30 +60,78 @@ models:
 
   - name: stg_product_shopee
     description: "A Shopee product staging model"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - region
+              - product_id
+              - sku_id
+
     columns:
-      - name: product_key
-        description: "Unique key for region, platform, product, and SKU"
-        tests:
-          - unique
+      - name: region
+        data_tests:
           - not_null
+
+      - name: product_id
+        data_tests:
+          - not_null
+
+      - name: sku_id
+        data_tests:
+          - not_null
+
 
   - name: stg_product_lazada
     description: "A Lazada product staging model"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - region
+              - product_id
+              - sku_id
+
     columns:
-      - name: product_key
-        description: "Unique key for region, platform, product, and SKU"
-        tests:
-          - unique
+      - name: region
+        data_tests:
           - not_null
+
+      - name: product_id
+        data_tests:
+          - not_null
+
+      - name: sku_id
+        data_tests:
+          - not_null
+
 
   - name: stg_product_tiktok
     description: "A TikTok product staging model"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - region
+              - product_id
+              - sku_id
+
     columns:
-      - name: product_key
-        description: "Unique key for region, platform, product, and SKU"
-        tests:
-          - unique
+      - name: region
+        data_tests:
           - not_null
+
+      - name: product_id
+        data_tests:
+          - not_null
+
+      - name: sku_id
+        data_tests:
+          - not_null
+
 
   # ==========================================
   # Order item staging
@@ -82,46 +139,217 @@ models:
 
   - name: stg_order_shopee
     description: "A Shopee order item staging model"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - region
+              - order_id
+              - product_id
+              - sku_id
+
     columns:
-      - name: order_key
-        description: "Unique key for region, platform, order, product, and SKU"
-        tests:
-          - unique
+      - name: region
+        data_tests:
           - not_null
+
+      - name: order_id
+        data_tests:
+          - not_null
+
+      - name: product_id
+        data_tests:
+          - not_null
+
+      - name: sku_id
+        data_tests:
+          - not_null
+
 
   - name: stg_order_lazada
     description: "A Lazada order item staging model"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - region
+              - order_id
+              - product_id
+              - sku_id
+
     columns:
-      - name: order_key
-        description: "Unique key for region, platform, order, product, and SKU"
-        tests:
-          - unique
+      - name: region
+        data_tests:
           - not_null
+
+      - name: order_id
+        data_tests:
+          - not_null
+
+      - name: product_id
+        data_tests:
+          - not_null
+
+      - name: sku_id
+        data_tests:
+          - not_null
+
 
   - name: stg_order_tiktok
     description: "A TikTok order item staging model"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - region
+              - order_id
+              - product_id
+              - sku_id
+
     columns:
-      - name: order_key
-        description: "Unique key for region, platform, order, product, and SKU"
-        tests:
-          - unique
+      - name: region
+        data_tests:
           - not_null
 
+      - name: order_id
+        data_tests:
+          - not_null
+
+      - name: product_id
+        data_tests:
+          - not_null
+
+      - name: sku_id
+        data_tests:
+          - not_null
+
+
+  # ==========================================
+  # Mart tables
+  # ==========================================
 
   - name: dim_product
-    description: "A combined product"
+    description: "A product dimension combining all 3 platform product data"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - platform
+              - region
+              - product_id
+              - sku_id
+
     columns:
-      - name: master_product_id
-        description: "Unique key for region, platform, product, and SKU"
-        tests:
-          - unique
+      - name: platform
+        data_tests:
           - not_null
 
+      - name: region
+        data_tests:
+          - not_null
+
+      - name: product_id
+        data_tests:
+          - not_null
+
+      - name: sku_id
+        data_tests:
+          - not_null
+
+
   - name: fact_order
-    description: "A combined order"
+    description: "An order fact table combining all 3 platform order data"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - platform
+              - region
+              - order_id
+              - product_id
+              - sku_id
+
     columns:
-      - name: order_key
-        description: "Unique key for region, platform, product, and SKU"
-        tests:
-          - unique
+      - name: platform
+        data_tests:
+          - not_null
+
+      - name: region
+        data_tests:
+          - not_null
+
+      - name: order_id
+        data_tests:
+          - not_null
+
+      - name: product_id
+        data_tests:
+          - not_null
+
+      - name: sku_id
+        data_tests:
+          - not_null
+
+
+  # ==========================================
+  # Mart views
+  # ==========================================
+
+  - name: vw_product_sales
+    description: "Product-level sales analysis"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - platform
+              - region
+              - master_product_id
+              - order_year_month
+
+    columns:
+      - name: platform
+        data_tests:
+          - not_null
+
+      - name: region
+        data_tests:
+          - not_null
+
+      - name: master_product_id
+        data_tests:
+          - not_null
+
+      - name: order_year_month
+        data_tests:
+          - not_null
+
+
+  - name: vw_monthly_sales
+    description: "Overall monthly sales performance"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - platform
+              - region
+              - order_year_month
+
+    columns:
+      - name: platform
+        data_tests:
+          - not_null
+
+      - name: region
+        data_tests:
+          - not_null
+
+      - name: order_year_month
+        data_tests:
           - not_null

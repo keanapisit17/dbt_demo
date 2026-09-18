@@ -1,8 +1,3 @@
-{{ config(
-    materialized='incremental',
-    unique_key='order_key'
-) }}
-
 WITH 
 lazada AS (
     SELECT *
